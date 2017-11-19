@@ -16,6 +16,9 @@ myOauthServer:
   #logoutUrl: ${myOauthServer.hostUrl}/signout
   logoutUrl: ${myOauthServer.hostUrl}/logreg/logout
   # directly to some1 oauth server /logout FAIL to logout
+myOauthResServer:
+  hostUrl: http://localhost:10081
+
 security:
   oauth2:
     sso:

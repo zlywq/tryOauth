@@ -30,9 +30,9 @@ security:
       userAuthorizationUri: ${myOauthServer.hostUrl}/oauth/authorize
       clientAuthenticationScheme: form
     resource:
-      #jwt:
-      #    keyUri: ${myOauthServer.hostUrl}/oauth/token_key
-      user-info-uri: ${myOauthServer.hostUrl}/res1/me
+      jwt:
+          keyUri: ${myOauthServer.hostUrl}/oauth/token_key
+      #user-info-uri: ${myOauthServer.hostUrl}/res1/me
 
 ## SECURITY OAUTH2 CLIENT (OAuth2ClientProperties)
 #security.oauth2.client.client-id= # OAuth2 client id.

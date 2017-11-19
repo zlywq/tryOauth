@@ -3,6 +3,9 @@ package g1.oauthlogin.config;
 import g1.oauthlogin.oauth.*;
 import g1.oauthlogin.sprsec.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -43,6 +46,9 @@ import java.util.Arrays;
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+
+    @Value("${myflag.ifUseJwt}")
+    boolean myflag_ifUseJwt;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -92,41 +98,58 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         比如 TokenKeyEndpoint 就引用了JwtAccessTokenConverter。而且还要求bean的返回值是JwtAccessTokenConverter类型，而不能是AccessTokenConverter，否则也不能自动注入。!!!!!!!!!!!...................
 
      */
-
-//    //如果没有这个JwtAccessTokenConverter的bean，会导致 /oauth/token_key 的访问处理出错，从而导致web1启动时访问这个url出错而无法启动。
-//    @Bean  //ok
-//    public JwtAccessTokenConverter accessTokenConverter() {
-//        JwtAccessTokenConverter accessTokenConverter = null;
-//        if (accessTokenConverter == null) {
-////            JwtAccessTokenConverter converter = new JwtAccessTokenConverter(); //ok
-////            KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("serverKeystore.jks"), "123456".toCharArray())
-////                    .getKeyPair("alias1", "123456".toCharArray());
-////            converter.setKeyPair(keyPair);
-//
-//            JwtAccessTokenConverter converter = new JwtAccessTokenConverter(); //ok
-//            converter.setSigningKey("123");
-//
-//            accessTokenConverter = converter;
-//        }
-//        return accessTokenConverter;
-//    }
-    @Bean
-    public AccessTokenConverter accessTokenConverter() {
-        AccessTokenConverter accessTokenConverter = null;
+    //如果没有这个JwtAccessTokenConverter的bean，会导致使用jwt的web app端对 /oauth/token_key 的访问处理出错，从而导致web1启动时访问这个url出错而无法启动。
+    @ConditionalOnProperty(value = {"myflag.ifUseJwt"},matchIfMissing = false)
+    @Bean  //ok
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        JwtAccessTokenConverter accessTokenConverter = null;
         if (accessTokenConverter == null) {
-            DefaultAccessTokenConverter converter = new DefaultAccessTokenConverter();
+//            JwtAccessTokenConverter converter = new JwtAccessTokenConverter(); //ok
+//            KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("serverKeystore.jks"), "123456".toCharArray())
+//                    .getKeyPair("alias1", "123456".toCharArray());
+//            converter.setKeyPair(keyPair);
+
+            JwtAccessTokenConverter converter = new JwtAccessTokenConverter(); //ok
+            converter.setSigningKey("123");
+
             accessTokenConverter = converter;
         }
         return accessTokenConverter;
     }
+    @ConditionalOnExpression("${myflag.ifUseJwt}==false")
+    @Bean
+    public DefaultAccessTokenConverter defaultAccessTokenConverter() {
+        DefaultAccessTokenConverter converter = new DefaultAccessTokenConverter();
+        return converter;
+    }
+    private AccessTokenConverter accessTokenConverter() {
+        AccessTokenConverter accessTokenConverter = null;
+        if (myflag_ifUseJwt){
+            accessTokenConverter = jwtAccessTokenConverter();
+        }else{
+            accessTokenConverter = defaultAccessTokenConverter();
+        }
+        if (accessTokenConverter == null) {
+            throw new RuntimeException("err for accessTokenConverter be null");
+        }
+        return accessTokenConverter;
+    }
+    //ok
+//    @Autowired
+//    AccessTokenConverter m_accessTokenConverter;
+//    private AccessTokenConverter accessTokenConverter() {
+//        return m_accessTokenConverter;
+//    }
 
     @Bean
     public TokenStore tokenStore(){
         TokenStore tokenStore = null;
-        if (tokenStore == null) {
-            ////this.tokenStore= new CustomJdbcTokenStore(dataSource);//暂且不用了...
+        if (myflag_ifUseJwt){
+            JwtTokenStore store = new JwtTokenStore((JwtAccessTokenConverter)accessTokenConverter()); //ok when all jwt
+            tokenStore = store;
+        }else{
+            ////store= new CustomJdbcTokenStore(dataSource);//暂且不用了...
             MyInMemoryTokenStore store = new MyInMemoryTokenStore();
-//            JwtTokenStore store = new JwtTokenStore((JwtAccessTokenConverter)accessTokenConverter()); //ok when all jwt
             tokenStore = store;
         }
         return tokenStore;
@@ -161,6 +184,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         if (approvalStore == null){
             approvalStore = new MyJdbcApprovalStore(dataSource);
         }
+//        TokenApprovalStore tokenApprovalStore = new TokenApprovalStore();
+//        tokenApprovalStore.setTokenStore(tokenStore());
+//        approvalStore = tokenApprovalStore;
         return approvalStore;
     }
     // in spring-security-oauthGit\spring-security-oauth2\src\main\java\org\springframework\security\oauth2\config\annotation\web\configurers\AuthorizationServerEndpointsConfigurer.java

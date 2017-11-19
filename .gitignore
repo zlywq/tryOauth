@@ -1,0 +1,15 @@
+/tmp
+/sprbtOauthLibCommon/target
+/sprbtOauthLibSpr/target
+/sprbtOauthLibweb/target
+/sprbtOauthLogin/target
+/sprbtOauthRes/target
+/sprbtOauthWeb1/target
+/.idea
+/sprbtOauthLibCommon/sprbtOauthLibCommon.iml
+/sprbtOauthLibSpr/sprbtOauthLibSpr.iml
+/sprbtOauthLibweb/sprbtOauthLibweb.iml
+/sprbtOauthLogin/sprbtOauthLogin.iml
+/sprbtOauthRes/sprbtOauthRes.iml
+/sprbtOauthWeb1/sprbtOauthWeb1.iml
+/sprbtOauthTop.iml

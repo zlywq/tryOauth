@@ -1,0 +1,127 @@
+﻿// ref : sprssoLibSpr\src\main\resources\dbSchema.txt
+//ref: sprssoLibDs2Spr\src\main\resources\dbSchema.txt
+
+// ref: D:\zlyt\demoBig\spring-security-oauthGit\spring-security-oauth2\src\test\resources\schema.sql
+// ~~
+
+
+/*
+SELECT User, Host, Password FROM mysql.user;
+GRANT ALL PRIVILEGES ON *.* TO 'user1'@'%' IDENTIFIED BY 'aaa' WITH GRANT OPTION; 
+GRANT ALL PRIVILEGES ON *.* TO 'user1'@'localhost' IDENTIFIED BY 'aaa' WITH GRANT OPTION; 
+mysql --host=localhost --port=3306 -u user1 -p
+*/
+
+
+#DROP DATABASE IF EXISTS sprbtOauth1;
+CREATE DATABASE sprbtOauth1 DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+use sprbtOauth1;
+
+
+Drop table  if exists oauth_client_details;
+create table oauth_client_details (
+  client_id VARCHAR(255) PRIMARY KEY,
+  resource_ids VARCHAR(255),
+  client_secret VARCHAR(255),
+  scope VARCHAR(255),
+  authorized_grant_types VARCHAR(255),
+  web_server_redirect_uri VARCHAR(255),
+  authorities VARCHAR(255),
+  access_token_validity INTEGER,
+  refresh_token_validity INTEGER,
+  additional_information VARCHAR(4096),
+  autoapprove VARCHAR(255),
+    archived tinyint(1) default '0',
+    trusted tinyint(1) default '0',
+    create_time timestamp default now()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#Drop table  if exists oauth_client_token;
+#create table oauth_client_token (
+#  token_id VARCHAR(255),
+#  token BLOB,
+#  authentication_id VARCHAR(255) PRIMARY KEY,
+#  user_name VARCHAR(255),
+#  client_id VARCHAR(255),
+#
+#  create_time timestamp default now()
+#);
+#create index idx_oct_token_id on oauth_client_token (token_id);
+## create index idx_oct_authentication_id on oauth_client_token (authentication_id);
+#create index idx_oct_user_name on oauth_client_token (user_name);
+#create index idx_oct_client_id on oauth_client_token (client_id);
+
+Drop table  if exists oauth_access_token;
+create table oauth_access_token (
+  token_id VARCHAR(255),
+  token BLOB,
+  authentication_id VARCHAR(255) PRIMARY KEY,
+  user_name VARCHAR(255),
+  client_id VARCHAR(255),
+  authentication BLOB,
+  refresh_token VARCHAR(255),
+  create_time timestamp default now()
+);
+create index idx_oat_token_id on oauth_access_token (token_id);
+# create index idx_oat_authentication_id on oauth_access_token (authentication_id);
+create index idx_oat_user_name on oauth_access_token (user_name);
+create index idx_oat_client_id on oauth_access_token (client_id);
+create index idx_oat_refresh_token on oauth_access_token (refresh_token);
+
+Drop table  if exists oauth_refresh_token;
+create table oauth_refresh_token (
+  token_id VARCHAR(255),
+  token BLOB,
+  authentication BLOB,
+  create_time timestamp default now()
+);
+create index idx_ort_token_id on oauth_refresh_token (token_id);
+
+Drop table  if exists oauth_code;
+create table oauth_code (
+  code VARCHAR(255),
+  authentication BLOB,
+  create_time timestamp default now()
+);
+create index idx_oc_code on oauth_code (code);
+
+Drop table  if exists oauth_approvals;
+create table oauth_approvals (
+	userId VARCHAR(255),
+	clientId VARCHAR(255),
+	scope VARCHAR(255),
+	status VARCHAR(10),
+	expiresAt TIMESTAMP,
+	lastModifiedAt TIMESTAMP,
+
+	create_time timestamp default now()
+);
+create index idx_oa_userId_clientId on oauth_approvals (userId,clientId);
+
+
+
+
+
+
+truncate  oauth_client_details;
+insert into oauth_client_details
+(client_id, resource_ids, client_secret, scope, authorized_grant_types,
+web_server_redirect_uri,authorities, access_token_validity,refresh_token_validity, additional_information,
+autoapprove, create_time, archived, trusted)
+values
+('ssoclient','ssoclient-resource', 'ssosecret', 'read,write,openid','authorization_code,refresh_token,password,implicit',
+null,'ROLE_CLIENT,ROLE_USER,ACTUATOR',null, null,null,
+'read,write,openid',now(), 0, 0),
+('acme','acme-resource', 'acmesecret', 'read,write,openid','authorization_code,refresh_token,password,implicit',
+null,'ROLE_CLIENT,ROLE_USER,ACTUATOR',null, null,null,
+'read,write,openid',now(), 0, 0),
+('client1','client1-resource', 'client1secret', 'read,write,openid','authorization_code,refresh_token,password,implicit',
+null,'ROLE_CLIENT',null, null,null,
+'',now(), 0, 0),
+('client2','client2-resource', 'client2secret', 'read,write,openid','authorization_code,refresh_token,password,implicit',
+null,'ROLE_USER',null, null,null,
+'',now(), 0, 0);
+
+
+
+

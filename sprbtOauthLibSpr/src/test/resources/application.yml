@@ -1,0 +1,16 @@
+
+druid1:
+  url: jdbc:mysql://127.0.0.1:3306/sprbtOauth1?useUnicode=true&characterEncoding=utf-8
+  username: user1
+  password: aaa
+  driver-class: com.mysql.jdbc.Driver
+  initial-size: 1
+  min-idle: 1
+  max-active: 20
+  test-on-borrow: true
+# spring:
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    t1: DEBUG

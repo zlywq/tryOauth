@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+</head>
+<script th:inline="javascript">
+    function to_sso(){
+        //location.href = /*[[${myOauthServer_hostUrl}]]*/ "todoUrl" + "/signout";
+        //var todoUrl = /*[[${myOauthServer_hostUrl}]]*/ "todoUrl" ;
+    	//location.href = todoUrl + "/signout";
+    	location.href = /*[[${myOauthServer_logoutUrl}]]*/ "todoUrl" ;
+    }
+</script>
+<body onload="to_sso()">
+	will go to <span th:text="${myOauthServer_logoutUrl}"></span>_/signout
+</body>
+</html>

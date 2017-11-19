@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+		<thisprojectversion>1.0-SNAPSHOT</thisprojectversion>
+		<!--
+		<spring-cloud-starter-parent-version>Dalston.RELEASE</spring-cloud-starter-parent-version>
+		<spring-cloud-starter-parent-version>Brixton.M5</spring-cloud-starter-parent-version>
+		-->
+    </properties>
+
+    <groupId>g1</groupId>
+    <artifactId>sprbtOauthTop</artifactId>
+    <packaging>pom</packaging>
+    <!--  
+    <version>${thisprojectversion}</version>
+    -->
+    <version>1.0-SNAPSHOT</version>
+    
+    <modules>
+	<!--
+        <module>sprssoLibCommon</module>
+        <module>sprssoLibSpr</module>
+        <module>sprssoLibDs2Spr</module>
+        
+        <module>sprssoLibWebCommon</module>
+        
+        <module>sprssoLibWebSec1</module>
+        
+        <module>sprssoLogin</module>
+        <module>sprssoOauthRes</module>
+        
+        <module>sprssoWeb1</module>
+        <module>sprssoWeb2</module>
+        
+        
+        <module>sprcldEurekaServerSimple</module>
+        <module>sprcldZuulProxySimple</module>
+        
+        <module>sprcldSrvProvider1</module>
+        <module>sprcldPrvdRes1</module>
+        
+        <module>sprcldSrvProvider2Layer</module>
+		<module>sprcldPrvdRes2Layer</module>
+		<module>sprcldWeb3</module>
+		<module>sprcldWeb4InnerZuul</module>
+-->
+		
+        
+        <!--
+        
+        
+		-->
+        <module>sprbtOauthLibCommon</module>
+        <module>sprbtOauthLibSpr</module>
+        <module>sprbtOauthLibweb</module>
+        <module>sprbtOauthLogin</module>
+        <module>sprbtOauthRes</module>
+        <module>sprbtOauthWeb1</module>
+    </modules>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+
+
+    <dependencies>
+<!-- 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot</artifactId>
+		</dependency>
+-->
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.38</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
+
+        
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        
+        
+        
+    </dependencies>
+
+
+
+
+
+    
+	<build>
+		<plugins>
+			<!--
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			-->
+			
+			
+		</plugins>
+	</build>
+	
+
+
+</project>

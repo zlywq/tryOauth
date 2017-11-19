@@ -1,0 +1,45 @@
+<!DOCTYPE html>  
+<html xmlns:th="http://www.thymeleaf.org">  
+<head>  
+<title>error_test</title>  
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+</head>  
+<body>  
+    <h5>error page</h5>
+    <hr/>  
+    <div >status:
+    	<span th:text="${status}"></span>
+    </div>
+    
+    <hr/>
+    <div >errMsg:
+    	<span th:text="${errMsg}"></span>
+    </div>
+    
+      
+    <hr/>
+    <div >message:
+    	<span th:text="${message}"></span>
+    </div>
+
+    <hr/>
+    <div >error:
+    	<span th:text="${error}"></span>
+    </div>
+
+    
+    
+    <hr/>
+    <div >errstack:<br/>
+    	
+    	<pre th:text="${errstack}"></pre>
+    </div>
+    
+    <hr/>
+    <div >trace:<br/>
+    	<pre th:text="${trace}"></pre>
+    </div>
+    
+    <hr/>
+</body>  
+</html>  

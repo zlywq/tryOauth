@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head >
+    <head>
+		<meta charset="utf-8"/>
+		<title>Info</title>
+	</head> 
+</head>
+<script>
+    <!--
+    function new_window(){
+        //location.href = "xxx";
+    }
+    //-->
+</script>
+
+
+<body onload="new_window()">
+
+
+	<div th:if="${srvTimeStr}" >
+		srvTimeStr:	<span th:text="${srvTimeStr}" ></span>
+	</div>
+	<div th:if="${username}" >
+		username:	<span th:text="${username}" ></span>
+	</div>
+	
+	
+	
+	<div>
+		
+	</div>
+
+	<a href="/logout">登出</a>
+
+
+
+</body>
+</html>

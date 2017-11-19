@@ -1,0 +1,98 @@
+﻿
+/*
+SELECT User, Host, Password FROM mysql.user;
+GRANT ALL PRIVILEGES ON *.* TO 'user1'@'%' IDENTIFIED BY 'aaa' WITH GRANT OPTION; 
+GRANT ALL PRIVILEGES ON *.* TO 'user1'@'localhost' IDENTIFIED BY 'aaa' WITH GRANT OPTION; 
+mysql --host=localhost --port=3306 -u user1 -p
+*/
+
+
+#DROP DATABASE IF EXISTS sprbtOauth1;
+CREATE DATABASE sprbtOauth1 DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+use sprbtOauth1;
+
+
+/*
+show  tables;
+
+#DROP INDEX IDX_User_f1 ON `User`;
+
+DROP TABLE IF EXISTS `User` ;
+DROP TABLE IF EXISTS authorities ;
+DROP TABLE IF EXISTS users ;
+DROP TABLE IF EXISTS persistent_logins ;
+
+DROP TABLE IF EXISTS `BbsPost`;
+
+*/
+
+/*
+describe `User` ;
+
+*/
+
+
+
+
+CREATE TABLE `User` (
+  `userId` BIGINT NOT NULL ,
+  `nickName` varchar(60) NOT NULL DEFAULT '',
+  `mobile` varchar(15) NOT NULL,
+  `email` varchar(40) ,
+  `description` varchar(500) ,
+  `isDisabled` TINYINT NOT NULL DEFAULT 0,
+  `isDeleted` TINYINT NOT NULL DEFAULT 0,
+  `createTime` INT NOT NULL DEFAULT 0,
+  `updateTime` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`userId`)
+) ENGINE=InnoDB;
+
+CREATE INDEX IDX_User_email on `User` (`email`); 
+CREATE INDEX IDX_User_mobile on `User` (`mobile`); 
+
+create table users(
+    username varchar(50) not null primary key,
+    password varchar(128) not null,
+    enabled boolean not null,
+    `createTime` INT NOT NULL DEFAULT 0,
+    `updateTime` INT NOT NULL DEFAULT 0
+);
+create table authorities (
+    username varchar(50) not null,
+    authority varchar(50) not null,
+    constraint fk_authorities_users foreign key(username) references users(username)
+);
+create unique index ix_auth_username on authorities (username,authority);
+create table persistent_logins (
+    username varchar(64) not null,
+    series varchar(64) primary key,
+    token varchar(64) not null,
+    last_used timestamp not null
+);
+
+CREATE TABLE `BbsPost` (
+  `postId` BIGINT NOT NULL ,
+  `userId` BIGINT NOT NULL ,
+  `groupId` BIGINT NOT NULL ,
+  `title` varchar(200) NOT NULL ,
+  `content` varchar(1000) NOT NULL,
+  `isDeleted` TINYINT NOT NULL DEFAULT 0,
+  `createTime` INT NOT NULL DEFAULT 0,
+  `updateTime` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`postId`)
+) ENGINE=InnoDB;
+CREATE INDEX IDX_BbsPost_userId on `BbsPost` (`userId`); 
+
+
+
+/*
+ALTER TABLE tableName ADD COLUMN columnName varchar(30);
+*/
+
+
+
+
+
+
+
+

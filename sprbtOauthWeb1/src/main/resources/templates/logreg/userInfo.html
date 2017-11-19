@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>user信息</title>
+</head>
+<body>
+	<h1>user信息</h1>
+	
+	
+	
+	<div id="errMsg" th:if="${errMsg}  != null" ><span th:text="'错误信息：'+ ${errMsg}"></span> </div>
+	
+	<div th:unless="${userInfo}" >
+		<P><b>没有user信息</b></P>
+	</div>
+	
+	<div th:if="${userInfo}" >
+
+	<table border="1">
+		<tr>
+			<td>userId</td>
+			<td th:text="${userInfo.userId}">userInfo.userId</td> 
+		</tr>
+		
+		<tr>
+			<td>nickName</td>
+			<td th:text="${userInfo.nickName}">userInfo.nickName</td> 
+		</tr>
+		<tr>
+			<td>mobile</td>
+			<td th:text="${userInfo.mobile}">userInfo.mobile</td> 
+		</tr>
+	
+		
+		
+		<tr>
+			<td>email</td>
+			<td th:text="${userInfo.email}">userInfo.email</td> 
+		</tr>
+		
+		<tr>
+			<td>isDeleted</td>
+			<td th:text="${userInfo.isDeleted}">userInfo.isDeleted</td> 
+		</tr>
+				
+		<tr>
+			<td>createTime</td>
+			<td th:text="${#dates.format(@utilBean.convertDateFromIntSeconds(userInfo.createTime),'yyyyMMdd HHmmss') +'('+userInfo.createTime+')' }">userInfo.createTime
+			    (这里展现了Thymeleaf 使用自定义函数，通过SpringStandard Dialect来使用SpringEL，从而可以使用bean并调用bean的方法)
+			</td>
+		</tr>
+		<tr>
+			<td>updateTime</td>
+			<td th:text="${#dates.format(@utilBean.convertDateFromIntSeconds(userInfo.updateTime),'yyyyMMdd HHmmss') +'('+userInfo.updateTime+')' }">userInfo.updateTime 
+			</td>    			
+		</tr>
+		<tr>
+		</tr>
+    </table>
+
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</body>
+</html>

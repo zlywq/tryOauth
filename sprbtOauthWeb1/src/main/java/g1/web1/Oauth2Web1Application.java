@@ -15,6 +15,8 @@ import g1.ClassInTopPackage;
 如果是使用jwt，在本服务启动时，会访问auth server的oauth2.resource.jwt.key-uri(/oauth/token)一次（通过fiddler抓包可以看到），之后访问resource server时，resource server不会再去访问auth server（通过fiddler抓包可以看到）。
     说明jwt的token里面应该自带了Principal的信息。
 
+使用github等的oauth，可以参考 https://spring.io/guides/tutorials/spring-boot-oauth2/ 。
+
  */
 @SpringBootApplication(scanBasePackageClasses={ClassInTopPackage.class},exclude = {MongoAutoConfiguration.class})
 //@EnableAutoConfiguration

@@ -22,10 +22,9 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
-import org.springframework.security.oauth2.provider.approval.ApprovalStore;
-import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
-import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
+import org.springframework.security.oauth2.provider.approval.*;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.endpoint.CheckTokenEndpoint;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
@@ -41,8 +40,12 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import javax.sql.DataSource;
 import java.security.KeyPair;
 import java.util.Arrays;
-
+/*
 //REFER D:\zlyt\demoBig\spring-security-oauthGit\spring-security-oauth2\src\main\java\org\springframework\security\oauth2\config\annotation\web\configurers\AuthorizationServerEndpointsConfigurer.java
+经过试验，有些表在使用jwt之后是用不着的 。参考dbSchema.txt里面的说明。
+而使用jwt相比不使用jwt，有一定的优势，参考 Oauth2Web1Application.java 里面的说明。
+ */
+
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
@@ -173,22 +176,30 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public AuthorizationCodeServices authorizationCodeServices(){
         AuthorizationCodeServices authorizationCodeServices = null;
         if (authorizationCodeServices == null) {
-            authorizationCodeServices = new P3AuthorizationCodeServices(dataSource);
+            //authorizationCodeServices = new P3AuthorizationCodeServices(dataSource);
+            authorizationCodeServices = new MyInMemoryAuthorizationCodeServices(); //官方源代码中也是使用的InMemoryAuthorizationCodeServices
         }
         return authorizationCodeServices;
     }
 
 
+
+    //这里是参考官方代码的实现。本文件很多地方都是参考的官方代码。
     @Bean
     public ApprovalStore approvalStore(){
         ApprovalStore approvalStore = null;
-        if (approvalStore == null){
+        if (isApprovalStoreDisabled()){
+            approvalStore = null;
+        }else{
             approvalStore = new MyJdbcApprovalStore(dataSource);
-        }
 //        TokenApprovalStore tokenApprovalStore = new TokenApprovalStore();
 //        tokenApprovalStore.setTokenStore(tokenStore());
 //        approvalStore = tokenApprovalStore;
+        }
         return approvalStore;
+    }
+    private boolean isApprovalStoreDisabled() {
+        return (tokenStore() instanceof JwtTokenStore);
     }
     // in spring-security-oauthGit\spring-security-oauth2\src\main\java\org\springframework\security\oauth2\config\annotation\web\configurers\AuthorizationServerEndpointsConfigurer.java
 //    private ApprovalStore approvalStore() {
@@ -199,9 +210,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //        }
 //        return this.approvalStore;
 //    }
+//    private boolean isApprovalStoreDisabled() {
+//        return approvalStoreDisabled || (tokenStore() instanceof JwtTokenStore);
+//    }
 
-
-//    //似乎没啥用，别人的例子中也没有用到。官方的代码里也奇怪。
+//    //似乎在auth server没啥用，别人的例子中也没有用到。官方的代码里也奇怪。可能是在web1 app中使用。
 //    @Bean
 //    public MyJdbcClientTokenServices jdbcClientTokenServices(){
 //        return new MyJdbcClientTokenServices(dataSource);
@@ -217,16 +230,28 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         }
         return requestFactory;
     }
-    //TODO ..... REFER userApprovalHandler() in D:\zlyt\demoBig\spring-security-oauthGit\spring-security-oauth2\src\main\java\org\springframework\security\oauth2\config\annotation\web\configurers\AuthorizationServerEndpointsConfigurer.java
+    // REFER userApprovalHandler() in D:\zlyt\demoBig\spring-security-oauthGit\spring-security-oauth2\src\main\java\org\springframework\security\oauth2\config\annotation\web\configurers\AuthorizationServerEndpointsConfigurer.java
     @Bean
     public UserApprovalHandler userApprovalHandler(){
         UserApprovalHandler userApprovalHandler = null;
         if (userApprovalHandler == null) {
-            P3UserApprovalHandler uah = new P3UserApprovalHandler();
-            uah.setTokenStore(tokenStore());
-            uah.setClientDetailsService(clientDetailsService());
-            uah.setRequestFactory(oAuth2RequestFactory());
-            userApprovalHandler = uah;
+            if (approvalStore() != null) {
+                ApprovalStoreUserApprovalHandler handler = new ApprovalStoreUserApprovalHandler();
+                handler.setApprovalStore(approvalStore());
+                handler.setRequestFactory(oAuth2RequestFactory());
+                handler.setClientDetailsService(clientDetailsService());
+                userApprovalHandler = handler;
+            }
+            else if (tokenStore() != null) {
+                P3UserApprovalHandler handler = new P3UserApprovalHandler();//ok
+                handler.setTokenStore(tokenStore());
+                handler.setClientDetailsService(clientDetailsService());
+                handler.setRequestFactory(oAuth2RequestFactory());
+                userApprovalHandler = userApprovalHandler;
+            }
+            else {
+                throw new IllegalStateException("Either a TokenStore or an ApprovalStore must be provided");
+            }
         }
         return userApprovalHandler;
     }

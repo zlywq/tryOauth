@@ -5,11 +5,25 @@
 // ~~
 
 
+
 /*
 SELECT User, Host, Password FROM mysql.user;
 GRANT ALL PRIVILEGES ON *.* TO 'user1'@'%' IDENTIFIED BY 'aaa' WITH GRANT OPTION; 
 GRANT ALL PRIVILEGES ON *.* TO 'user1'@'localhost' IDENTIFIED BY 'aaa' WITH GRANT OPTION; 
 mysql --host=localhost --port=3306 -u user1 -p
+
+
+经过试验，有些表在使用jwt之后是用不着的，比如下面的未被注释的Drop table..的那些表。
+而oauth_client_details是一般用得上的，比如要支持第三方的通过本server来登录，或者要细分内部的各个子系统。当然，极简的时候也是可省。
+还有oauth_code虽然有场景可以用上，参考P3AuthorizationCodeServices里面的注释，但是，由于数据很快产生很快又删除（消费掉）的特性，完全可以放到内存里面，用MyInMemoryAuthorizationCodeServices来解决。
+这样，一般只保留一张表oauth_client_details（并且需要使用cache来加速访问），极简情况下一张表都可以不用。
+## Drop table  if exists oauth_client_details;
+# Drop table  if exists oauth_code;
+Drop table  if exists oauth_client_token;
+Drop table  if exists oauth_access_token;
+Drop table  if exists oauth_refresh_token;
+Drop table  if exists oauth_approvals;
+
 */
 
 

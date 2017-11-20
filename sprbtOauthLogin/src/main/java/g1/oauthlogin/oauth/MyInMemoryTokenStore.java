@@ -10,6 +10,9 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 
 import java.util.Collection;
 
+/*
+如果使用jwt，这个则用不着了。
+ */
 public class MyInMemoryTokenStore extends InMemoryTokenStore {
 
 

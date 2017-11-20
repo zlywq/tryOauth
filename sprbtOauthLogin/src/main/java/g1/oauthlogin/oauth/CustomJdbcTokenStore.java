@@ -15,11 +15,7 @@ import javax.sql.DataSource;
 
 
 /**
- * 2016/7/26
- * <p/>
- * 扩展默认的 TokenStore, 增加对缓存的支持
- *
- * @author Shengzhao Li
+ 经过试验，有些表在使用jwt之后是用不着的，比如这里的 oauth_access_token ，即JdbcTokenStore可以用不着 。参考dbSchema.txt里面的说明。
  */
 public class CustomJdbcTokenStore extends JdbcTokenStore {
 
@@ -31,27 +27,22 @@ public class CustomJdbcTokenStore extends JdbcTokenStore {
     }
 
 
-    //@Cacheable(value = ACCESS_TOKEN_CACHE, key = "#tokenValue")
     public OAuth2AccessToken readAccessToken(String tokenValue) {
         logger.info(""+ Util1.getCurrentClassName()+"."+Util1.getCurrentMethodName()+" enter tokenValue="+tokenValue);
         return super.readAccessToken(tokenValue);
     }
 
-
-    //@CacheEvict(value = ACCESS_TOKEN_CACHE, key = "#tokenValue")
     public void removeAccessToken(String tokenValue) {
         logger.info(""+ Util1.getCurrentClassName()+"."+Util1.getCurrentMethodName()+" enter tokenValue="+tokenValue);
         super.removeAccessToken(tokenValue);
     }
 
 
-    //@Cacheable(value = REFRESH_TOKEN_CACHE, key = "#token")
     public OAuth2RefreshToken readRefreshToken(String token) {
         logger.info(""+ Util1.getCurrentClassName()+"."+Util1.getCurrentMethodName()+" enter token="+token);
         return super.readRefreshToken(token);
     }
 
-    //@CacheEvict(value = REFRESH_TOKEN_CACHE, key = "#token")
     public void removeRefreshToken(String token) {
         logger.info(""+ Util1.getCurrentClassName()+"."+Util1.getCurrentMethodName()+" enter token="+token);
         super.removeRefreshToken(token);

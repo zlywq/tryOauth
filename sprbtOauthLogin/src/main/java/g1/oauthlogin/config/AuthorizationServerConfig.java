@@ -49,7 +49,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Value("${myflag.ifUseJwt}")
     boolean myflag_ifUseJwt;
-
+    @Value("${myflag.ifJwtSimple}")
+    boolean myflag_ifJwtSimple;
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -103,15 +104,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Bean  //ok
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter accessTokenConverter = null;
-        if (accessTokenConverter == null) {
-//            JwtAccessTokenConverter converter = new JwtAccessTokenConverter(); //ok
-//            KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("serverKeystore.jks"), "123456".toCharArray())
-//                    .getKeyPair("alias1", "123456".toCharArray());
-//            converter.setKeyPair(keyPair);
-
+        if (myflag_ifJwtSimple) {
             JwtAccessTokenConverter converter = new JwtAccessTokenConverter(); //ok
             converter.setSigningKey("123");
-
+            accessTokenConverter = converter;
+        }else{
+            JwtAccessTokenConverter converter = new JwtAccessTokenConverter(); //ok
+            KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("serverKeystore.jks"), "123456".toCharArray())
+                    .getKeyPair("alias1", "123456".toCharArray());
+            converter.setKeyPair(keyPair);
             accessTokenConverter = converter;
         }
         return accessTokenConverter;

@@ -15,22 +15,22 @@ myOauthServer:
   #hostUrl: http://localhost
   hostUrl: ${myOauthServer.hostUrlWithoutPort}:10080
 
-security:
-  oauth2:
-    resource:
-      jwt:
-        keyUri: ${myOauthServer.hostUrl}/oauth/token_key
-        keyValue: |
-          -----BEGIN PUBLIC KEY-----
-          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjWx7waAGOW0GCvWtz22C0r2S9IDpjpURZiUbX9DFgUBSJ2/XqHYWP3I/I8IAWIvLqaE4RFAAwzaIySVN/pM2WUVRPCHlRF192HtrAc3CoZD5lVOHsU5f++22N6CrjQJQkX4V88efI596TbzqYkNJzmNLeBKuip9MLlMTW6z7+wuIw3KOUGk3+nH8MspMUk7vrGFOZG+UslkYCnx6+1gInEddaZm5HHyvAUh/lo7At3a2g7TaYE3PepSpZsZ6YNw68YhOkI+xG2OFkLek1vej8bGz6wEubeYI4nI3fjm8pEqh1s0NJrHwrxLtp9ncvo08bWEYYZonKJ5FvVw9+jgXiwIDAQAB
-          -----END PUBLIC KEY-----
 #security:
 #  oauth2:
 #    resource:
 #      jwt:
 #        keyUri: ${myOauthServer.hostUrl}/oauth/token_key
-#        keyValue: 123
-#      #user-info-uri: ${myOauthServer.hostUrl}/res1/me
+#        keyValue: |
+#          -----BEGIN PUBLIC KEY-----
+#          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjWx7waAGOW0GCvWtz22C0r2S9IDpjpURZiUbX9DFgUBSJ2/XqHYWP3I/I8IAWIvLqaE4RFAAwzaIySVN/pM2WUVRPCHlRF192HtrAc3CoZD5lVOHsU5f++22N6CrjQJQkX4V88efI596TbzqYkNJzmNLeBKuip9MLlMTW6z7+wuIw3KOUGk3+nH8MspMUk7vrGFOZG+UslkYCnx6+1gInEddaZm5HHyvAUh/lo7At3a2g7TaYE3PepSpZsZ6YNw68YhOkI+xG2OFkLek1vej8bGz6wEubeYI4nI3fjm8pEqh1s0NJrHwrxLtp9ncvo08bWEYYZonKJ5FvVw9+jgXiwIDAQAB
+#          -----END PUBLIC KEY-----
+security:
+  oauth2:
+    resource:
+      jwt:
+        keyUri: ${myOauthServer.hostUrl}/oauth/token_key
+        keyValue: 123
+      #user-info-uri: ${myOauthServer.hostUrl}/res1/me
 
 # SECURITY OAUTH2 RESOURCES (ResourceServerProperties)
 #security.oauth2.resource.filter-order= # The order of the filter chain used to authenticate tokens.

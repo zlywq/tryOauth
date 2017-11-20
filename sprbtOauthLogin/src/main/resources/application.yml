@@ -2,6 +2,8 @@
 myflag:
     #ifUseJwt: false
     ifUseJwt: true
+    #ifJwtSimple: true
+    ifJwtSimple: false
 server:
   port: 10080
 #  port: 8443

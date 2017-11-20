@@ -1,4 +1,26 @@
 
+目前达到的效果是，所有各方(auth server,resource server,web1)在使用jwt和不使用jwt的情况下都试通。都是在http的情况下。
+    使用jwt又分了两种小情况，使用简单key和使用复杂key。后来的修改主要试了复杂key的情况。
+发现不用jwt导致每个访问resource server的请求多一个内部网络请求。而使用jwt，一个jwt将近1kB的大小，会导致每个请求多耗费接近1kB的带宽。这得权衡。
+而且，使用jwt，可以省掉很多数据库中的表格（或者对应的内存，如果不使用jwt且相关数据放内存的话），除了1张表格可能省不掉。数据库访问相对很慢，即使用了缓存。个人倾向于用jwt。
+
+另外，代码各处还有注释，这里没有都提到。
+
+关于数据库表结构，搜dbSchema.txt文件，这里有2个。
+关于初始化数据，有些是在dbSchema.txt里面的。还有的在 sprbtOauthLibSpr\src\test\java\t1\Test1.java 里面，如 CreateUser()。
+
+
+
+关于调试时使用抓包工具fiddler。目前在windows7下试验OK。目前使用-Djava.net.useSystemProxies=true(或System.setProperty("java.net.useSystemProxies", "true");)是可以让程序里的http走代理的。
+
+关于jwt使用证书，大概是参考
+Configuring Spring Oauth2 with JWT & asymmetric RSA keypair. MARCH 31, 2015 https://beku8.wordpress.com/2015/03/31/configuring-spring-oauth2-with-jwt-asymmetric-rsa-keypair/
+    $ keytool -genkeypair -alias alias1 -keyalg RSA -dname "CN=localhost,OU=zly,O=zly,L=City,S=State,C=US" -keypass 123456 -keystore localhost.jks -storepass 123456
+    $ keytool -export -keystore localhost.jks -alias alias1 -file localhost.cer
+
+
+--------------------
+
 
 
 mvn clean package -DskipTests

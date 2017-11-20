@@ -17,6 +17,8 @@ import g1.ClassInTopPackage;
 
 使用github等的oauth，可以参考 https://spring.io/guides/tutorials/spring-boot-oauth2/ 。
 
+取到access_token后，可以放在url里面用get方式，目前试了也是可以支持的。
+
  */
 @SpringBootApplication(scanBasePackageClasses={ClassInTopPackage.class},exclude = {MongoAutoConfiguration.class})
 //@EnableAutoConfiguration

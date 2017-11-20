@@ -25,6 +25,9 @@ public class Res1Controller {
 
 
 
+    /*
+    当不使用jwt时，需要为resource server和web1 提供 security.oauth2.resource.token-info-uri
+     */
     @RequestMapping(value = "/me")
     @ResponseBody
     public Map<String,Object> getSelfUser(Principal principal ) {

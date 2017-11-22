@@ -25,12 +25,12 @@ public class MyAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-	@Value("${myserver.awareReverseProxyUrl.scheme}")
-	String myserver_awareReverseProxyUrl_scheme;
-    @Value("${myserver.awareReverseProxyUrl.serverName}")
-    String myserver_awareReverseProxyUrl_serverName;
-    @Value("${myserver.awareReverseProxyUrl.serverPort}")
-    int myserver_awareReverseProxyUrl_serverPort;
+//	@Value("${myserver.awareReverseProxyUrl.scheme}")
+//	String myserver_awareReverseProxyUrl_scheme;
+//    @Value("${myserver.awareReverseProxyUrl.serverName}")
+//    String myserver_awareReverseProxyUrl_serverName;
+//    @Value("${myserver.awareReverseProxyUrl.serverPort}")
+//    int myserver_awareReverseProxyUrl_serverPort;
 
 
 
@@ -70,39 +70,39 @@ public class MyAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint
 		}
 	}
 
-	/*
-	这里是为了解决前端有nginx代理时出的一个问题。详细说明见有关nginx的说明部分。
-	 */
-	protected String buildRedirectUrlToLoginPage(HttpServletRequest request,
-												 HttpServletResponse response, AuthenticationException authException) {
-        String url ;
-	    if (StringUtils.isNotEmpty(myserver_awareReverseProxyUrl_serverName)){
-            String loginForm = determineUrlToUseForThisRequest(request, response,authException);
-//            if (UrlUtils.isAbsoluteUrl(loginForm)) {
-//                return loginForm;
+//	/*
+//	这里是为了解决前端有nginx代理时出的一个问题。详细说明见有关nginx的说明部分。
+//	 */
+//	protected String buildRedirectUrlToLoginPage(HttpServletRequest request,
+//												 HttpServletResponse response, AuthenticationException authException) {
+//        String url ;
+//	    if (StringUtils.isNotEmpty(myserver_awareReverseProxyUrl_serverName)){
+//            String loginForm = determineUrlToUseForThisRequest(request, response,authException);
+////            if (UrlUtils.isAbsoluteUrl(loginForm)) {
+////                return loginForm;
+////            }
+//            RedirectUrlBuilder urlBuilder = new RedirectUrlBuilder();
+//            String scheme = myserver_awareReverseProxyUrl_scheme;
+//            if (StringUtils.isEmpty(scheme)){
+//                scheme = request.getScheme();
 //            }
-            RedirectUrlBuilder urlBuilder = new RedirectUrlBuilder();
-            String scheme = myserver_awareReverseProxyUrl_scheme;
-            if (StringUtils.isEmpty(scheme)){
-                scheme = request.getScheme();
-            }
-            int serverPort = myserver_awareReverseProxyUrl_serverPort;
-            if (serverPort == 0){
-                //serverPort = portResolver.getServerPort(request);
-                request.getServerPort();
-            }
-
-            urlBuilder.setScheme(scheme);
-            urlBuilder.setServerName(myserver_awareReverseProxyUrl_serverName);
-            urlBuilder.setPort(serverPort);
-            urlBuilder.setContextPath(request.getContextPath());
-            urlBuilder.setPathInfo(loginForm);
-            url = urlBuilder.getUrl();
-        }else{
-	        url = super.buildRedirectUrlToLoginPage(request,response,authException);
-        }
-        return url;
-	}
+//            int serverPort = myserver_awareReverseProxyUrl_serverPort;
+//            if (serverPort == 0){
+//                //serverPort = portResolver.getServerPort(request);
+//                request.getServerPort();
+//            }
+//
+//            urlBuilder.setScheme(scheme);
+//            urlBuilder.setServerName(myserver_awareReverseProxyUrl_serverName);
+//            urlBuilder.setPort(serverPort);
+//            urlBuilder.setContextPath(request.getContextPath());
+//            urlBuilder.setPathInfo(loginForm);
+//            url = urlBuilder.getUrl();
+//        }else{
+//	        url = super.buildRedirectUrlToLoginPage(request,response,authException);
+//        }
+//        return url;
+//	}
 	
 
 }

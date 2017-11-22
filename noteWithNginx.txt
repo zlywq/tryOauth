@@ -1,0 +1,208 @@
+
+
+
+
+正常情况下，希望nginx前端是https，后端是http。这样既解决了客户端与服务端通信的安全问题，服务端的内部不用https而是http则消除了不必要的性能损耗。
+这里oauth server,res server,web server都是spring boot的程序，内嵌tomcat。注意要支持nginx需要一些类似x-forwarded-xyz等的header配置，参考各个application.properties文件。
+注意配置上需要web server的security.oauth2.client.userAuthorizationUri(xxxx/oauth/authorize)设置为oauth server的外部地址。
+    这个地址只是用于重定向的，是给浏览器使用的。根据调查，根据Fiddler的抓包情况得出这个结论。(试验中遇到一个多次重定向丢失外部地址信息的问题，终于发现这里是关键。)
+        而别的配置的url，比如web server的security.oauth2.client.accessTokenUri(xxxx/oauth/token)才是内部访问。
+实际试验中，正常的那种情况试验可行，环境如下：
+	目前在高度仿真的环境试验了。oauth server,res server,web server和nginx代理各一台机器。nginx上外面是https，内部是http。使用name而不是ip来访问这些机器，在各个机器的/etc/hosts文件中做了配置。注意browser上访问的name是nginx所在机器的name。
+	    这样oauth server,res server,web server内部通信使用http，免除不必要的性能损耗。
+	    另外不必端口对应相同。即端口可自由自定义。
+	    目前的一点小问题是，nginx不能同时代理https和http，虽然可以改代码，但必要性不大了。
+TODO 试验oauth server使用集群且用到多级nginx（即内层有一层nginx专门反向代理oauth server集群）时的情况。
+        此时要考虑这样一种情况。
+            浏览器访问web server后被重定向到某个auth server，在那边经过交互获得了code，再重定向回到web server并把code发给web server让web server去找auth server用code换access_token等。
+            此时要么保证每次访问的都是同一个auth server；要么使用一个存储server来存储这个code，让任意一个auth server都能访问到这个code。
+
+
+
+nginx自身的配置如下
+    ##########################################
+    upstream tomcatAuth {
+        server authsrv1:10080 fail_timeout=0;
+    }
+    server {
+        listen       10090;
+	listen       10095 ssl;
+        server_name  localhost;
+
+	ssl_certificate      cert/opensslGen2.crt;
+	ssl_certificate_key  cert/opensslGen2-2.key;
+
+	ssl_session_cache    shared:SSL:1m;
+	ssl_session_timeout  5m;
+
+	ssl_ciphers  HIGH:!aNULL:!MD5;
+	ssl_prefer_server_ciphers  on;
+
+	#proxy_redirect http:// $scheme://; #~~~~~~~~~~~.............
+        #port_in_redirect on; # http://blog.csdn.net/juncke/article/details/52539175 #~~~~~~~~~~~.............
+
+        #charset koi8-r;
+        #access_log  logs/host.access.log  main;
+	location / {
+		# proxy_redirect off;
+
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Real-IP  $remote_addr;
+		  #proxy_set_header Host $http_host;  # not tried
+		#proxy_set_header  Host $host; # cause port problem when redirect such as when login
+		proxy_set_header Host $host:$server_port;  # no port problem when redirect such as when login
+
+		#proxy_set_header X-Forwarded-Proto https;
+		proxy_set_header X-Forwarded-Proto $scheme; #when try https url,fail at redirect to login
+
+		proxy_set_header X-Forwarded-Port $server_port;
+		    #spring boot app needed
+
+		#proxy_set_header   Cookie $http_cookie;
+
+		proxy_connect_timeout      240;
+		proxy_send_timeout         240;
+		proxy_read_timeout         240;
+		# note, there is not SSL here! plain HTTP is used
+		proxy_pass http://tomcatAuth;
+		# proxy_pass http://127.0.0.1:8080;  # ok
+	}
+    }
+    ##########################################
+    upstream tomcatResource {
+        server ressrv1:10081 fail_timeout=0;
+    }
+    server {
+        listen       10091;
+	listen       10096 ssl;
+        server_name  localhost;
+
+	ssl_certificate      cert/opensslGen2.crt;
+	ssl_certificate_key  cert/opensslGen2-2.key;
+
+	ssl_session_cache    shared:SSL:1m;
+	ssl_session_timeout  5m;
+
+	ssl_ciphers  HIGH:!aNULL:!MD5;
+	ssl_prefer_server_ciphers  on;
+
+	#proxy_redirect http:// $scheme://; #~~~~~~~~~~~.............
+        #port_in_redirect on; # http://blog.csdn.net/juncke/article/details/52539175 #~~~~~~~~~~~.............
+
+        #charset koi8-r;
+        #access_log  logs/host.access.log  main;
+	location / {
+		# proxy_redirect off;
+
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Real-IP  $remote_addr;
+		  #proxy_set_header Host $http_host;  # not tried
+		#proxy_set_header  Host $host; # cause port problem when redirect such as when login
+		proxy_set_header Host $host:$server_port;  # no port problem when redirect such as when login
+
+		#proxy_set_header X-Forwarded-Proto https;
+		proxy_set_header X-Forwarded-Proto $scheme; #when try https url,fail at redirect to login
+
+		proxy_set_header X-Forwarded-Port $server_port;
+		    #spring boot app needed
+
+		#proxy_set_header   Cookie $http_cookie;
+
+		proxy_connect_timeout      240;
+		proxy_send_timeout         240;
+		proxy_read_timeout         240;
+		# note, there is not SSL here! plain HTTP is used
+		proxy_pass http://tomcatResource;
+		# proxy_pass http://127.0.0.1:8080;  # ok
+	}
+    }
+    ##########################################
+    upstream tomcatWeb1 {
+        server websrv1:10082 fail_timeout=0;
+    }
+    server {
+        listen       10092;
+	listen       10097 ssl;
+        server_name  localhost;
+
+	ssl_certificate      cert/opensslGen2.crt;
+	ssl_certificate_key  cert/opensslGen2-2.key;
+
+	ssl_session_cache    shared:SSL:1m;
+	ssl_session_timeout  5m;
+
+	ssl_ciphers  HIGH:!aNULL:!MD5;
+	ssl_prefer_server_ciphers  on;
+
+	#proxy_redirect http:// $scheme://; #~~~~~~~~~~~.............
+        #port_in_redirect on; # http://blog.csdn.net/juncke/article/details/52539175 #~~~~~~~~~~~.............
+
+        #charset koi8-r;
+        #access_log  logs/host.access.log  main;
+	location / {
+		# proxy_redirect off;
+
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Real-IP  $remote_addr;
+		  #proxy_set_header Host $http_host;  # not tried
+		#proxy_set_header  Host $host; # cause port problem when redirect such as when login
+		proxy_set_header Host $host:$server_port;  # no port problem when redirect such as when login
+
+		#proxy_set_header X-Forwarded-Proto https;
+		proxy_set_header X-Forwarded-Proto $scheme; #when try https url,fail at redirect to login
+
+		proxy_set_header X-Forwarded-Port $server_port;
+		    #spring boot app needed
+
+		#proxy_set_header   Cookie $http_cookie;
+
+		proxy_connect_timeout      240;
+		proxy_send_timeout         240;
+		proxy_read_timeout         240;
+		# note, there is not SSL here! plain HTTP is used
+		proxy_pass http://tomcatWeb1;
+		# proxy_pass http://127.0.0.1:8080;  # ok
+	}
+    }
+    ##########################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

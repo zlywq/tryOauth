@@ -34,43 +34,43 @@ d:
 cd D:\zly2\try\trySprBoot\tryOauth\tmp\login
 del sprbtOauthLogin-1.0-SNAPSHOT.jar
 copy D:\zly2\try\trySprBoot\tryOauth\sprbtOauthLogin\target\sprbtOauthLogin-1.0-SNAPSHOT.jar .\
-del application1.yml application.yml
-copy D:\zly2\try\trySprBoot\tryOauth\sprbtOauthLogin\target\classes\application.yml .\application1.yml
+del application1.* application.*
+copy D:\zly2\try\trySprBoot\tryOauth\sprbtOauthLogin\target\classes\application.* .\
 dir
 --
 d:
 cd D:\zly2\try\trySprBoot\tryOauth\tmp\res
 del sprbtOauthRes-1.0-SNAPSHOT.jar
 copy D:\zly2\try\trySprBoot\tryOauth\sprbtOauthRes\target\sprbtOauthRes-1.0-SNAPSHOT.jar .\
-del application1.yml application.yml
-copy D:\zly2\try\trySprBoot\tryOauth\sprbtOauthRes\target\classes\application.yml .\application1.yml
+del application1.* application.*
+copy D:\zly2\try\trySprBoot\tryOauth\sprbtOauthRes\target\classes\application.* .\
 dir
 --
 d:
 cd D:\zly2\try\trySprBoot\tryOauth\tmp\web1
 del sprbtOauthWeb1-1.0-SNAPSHOT.jar
 copy D:\zly2\try\trySprBoot\tryOauth\sprbtOauthWeb1\target\sprbtOauthWeb1-1.0-SNAPSHOT.jar .\
-#del application1.yml application.yml
-#copy D:\zly2\try\trySprBoot\tryOauth\sprbtOauthWeb1\target\classes\application.yml .\application1.yml
+del application1.* application.*
+copy D:\zly2\try\trySprBoot\tryOauth\sprbtOauthWeb1\target\classes\application.* .\
 dir
 
 ----------------------------------------------
 
 d:
 cd D:\zly2\try\trySprBoot\tryOauth\tmp\login
-java -Djava.net.useSystemProxies=true -jar sprbtOauthLogin-1.0-SNAPSHOT.jar --spring.config.name=application1
+java -Djava.net.useSystemProxies=true -jar sprbtOauthLogin-1.0-SNAPSHOT.jar --spring.config.name=application
 # java -Djava.net.useSystemProxies=true -jar sprbtOauthLogin-1.0-SNAPSHOT.jar --spring.config.name=application2
 http://localhost:10080/
 http://localhost:10180/
 ----
 d:
 cd D:\zly2\try\trySprBoot\tryOauth\tmp\res
-java -Djava.net.useSystemProxies=true -jar sprbtOauthRes-1.0-SNAPSHOT.jar --spring.config.name=application1
+java -Djava.net.useSystemProxies=true -jar sprbtOauthRes-1.0-SNAPSHOT.jar --spring.config.name=application
 http://localhost:10081/
 ----
 d:
 cd D:\zly2\try\trySprBoot\tryOauth\tmp\web1
-java -Djava.net.useSystemProxies=true -jar sprbtOauthWeb1-1.0-SNAPSHOT.jar --spring.config.name=application1
+java -Djava.net.useSystemProxies=true -jar sprbtOauthWeb1-1.0-SNAPSHOT.jar --spring.config.name=application
 # java -Djava.net.useSystemProxies=true -jar sprbtOauthWeb1-1.0-SNAPSHOT.jar --spring.config.name=application2
 http://localhost:10082/
 http://localhost:10182/

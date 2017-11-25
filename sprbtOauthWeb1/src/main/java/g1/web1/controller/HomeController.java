@@ -1,6 +1,9 @@
 package g1.web1.controller;
 
 import com.alibaba.fastjson.JSON;
+import g1.libcmn.domain.BbsPost;
+import g1.libcmn.util.Const;
+import g1.libcmn.util.UtilMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,9 @@ import g1.libcmn.domain.Model1;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -63,8 +68,22 @@ public class HomeController {
 
         return "home";
     }
-    
 
+	@RequestMapping(value = "/getOauthTokens")
+	@ResponseBody
+	public Map<String,Object> getOauthTokens( ) {
+		HashMap<String,Object> dtMap = new HashMap<>();
+		try{
+			OAuth2AccessToken oAuth2AccessToken = oAuth2ClientContext.getAccessToken();
+			String strAccessTokenObj = JSON.toJSONString(oAuth2AccessToken);
+			dtMap.put("strAccessTokenObj", strAccessTokenObj );
+			dtMap.put("accessToken", oAuth2AccessToken.getValue());
+			dtMap.put(Const.Key_success, true);
+		}catch(Exception e){
+			UtilMsg.retriveErrMsgAndCodeToMap_withLog(e, dtMap);
+		}
+		return dtMap;
+	}
 
     @RequestMapping(value="/deny")
     public String handleDeny(){

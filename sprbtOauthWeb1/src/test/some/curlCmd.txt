@@ -1,0 +1,11 @@
+
+
+curl http://localhost:10080/oauth/token -X POST -u client1:client1secret -d "grant_type=password&username=111&password=aaa"
+    # got json return
+curl http://localhost:10081/res1/m1?access_token=xxxx
+
+
+
+
+
+

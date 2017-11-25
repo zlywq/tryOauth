@@ -1,12 +1,9 @@
-package g1.oauthlogin;
+package main1;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
-import org.springframework.context.annotation.ComponentScan;
 import g1.ClassInTopPackage;
 
 import javax.servlet.ServletContext;

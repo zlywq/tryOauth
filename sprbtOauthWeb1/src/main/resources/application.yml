@@ -14,7 +14,7 @@ myOauthServer:
   #hostUrl: http://localhost
   hostUrl: ${myOauthServer.hostUrlWithoutPort}:10080
   #hostUrlBeforeProxy: http://win7base:10090
-  hostUrlBeforeProxy: https://win7base:10095
+  hostUrlBeforeProxy: http://win7base:10080
   #logoutUrl: ${myOauthServer.hostUrl}/logreg/logout
   logoutUrl: ${myOauthServer.hostUrlBeforeProxy}/logreg/logout
   # directly to some1 oauth server /logout FAIL to logout
